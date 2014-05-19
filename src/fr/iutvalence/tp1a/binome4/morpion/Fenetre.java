@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,20 +15,25 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 
 public class Fenetre implements Runnable {
-    private Partie partieIHM;
+    private PartieIHM partieIHM;
     private JTextField jtf1;
     private JTextField jtf2;
-    
+
+    private JButton buton;
+
+    private JFrame demande;
+    private JFrame tabMorpion;
+
     @Override
     public void run() {
 	demanderJoueurs();
 	jeu();
     }
-    
+
     private void demanderJoueurs() {
-	JFrame demande = new JFrame("Morpion");
+	demande = new JFrame("Morpion");
 	demande.setSize(600, 600);
-	//demande.setDefaultCloseOperation(JFrame.D);
+	// demande.setDefaultCloseOperation(JFrame.D);
 	demande.setLocationRelativeTo(null);
 	JPanel container = new JPanel();
 	container.setBackground(Color.white);
@@ -52,17 +58,45 @@ public class Fenetre implements Runnable {
 	demande.setVisible(true);
 	demande.pack();
     }
-    
+
     private void jeu() {
-	JFrame tabMorpion = new JFrame("Morpion");
+	tabMorpion = new JFrame("Morpion");
 	tabMorpion.setSize(600, 600);
-	//demande.setDefaultCloseOperation(JFrame.D);
+	// demande.setDefaultCloseOperation(JFrame.D);
 	tabMorpion.setLocationRelativeTo(null);
 	JPanel container = new JPanel();
 	container.setBackground(Color.white);
 	JPanel top = new JPanel();
-	tabMorpion.setContentPane(container);
+
+	tabMorpion.setLayout(new GridLayout(3, 3));
+
+	for (int numeroDeLigne = 1; numeroDeLigne < 4; numeroDeLigne++) {
+	    for (int numeroDeColonne = 1; numeroDeColonne < 4; numeroDeColonne++) {
+		JButton bouton = new Bouton(numeroDeLigne, numeroDeColonne);
+		tabMorpion.add(bouton);
+	    }
+	}
+
 	tabMorpion.setVisible(false);
+
+    }
+
+    private class Bouton extends JButton {
+	private int ligne;
+	private int colonne;
+
+	Bouton(int numLigne, int numColonne) {
+	    ligne = numLigne;
+	    colonne = numColonne;
+	    addActionListener(new BListener());
+	}
+
+	class BListener implements ActionListener {
+	    public void actionPerformed(ActionEvent e) {
+		if (partieIHM.estLibre(ligne, colonne))
+		    partieIHM.poserPion(ligne,colonne,Pion pion)
+	    }
+	}
     }
 
     class BoutonListener implements ActionListener {
@@ -70,8 +104,10 @@ public class Fenetre implements Runnable {
 	    final Joueur joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
 	    final Joueur joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
 	    final Score gestionnaireScore = new Score(joueur1, joueur2);
-	    partieIHM = new Partie(joueur1, joueur2, gestionnaireScore);
+	    partieIHM = new PartieIHM(joueur1, joueur2, gestionnaireScore);
+	    demande.setVisible(false);
 	    tabMorpion.setVisible(true);
+
 	}
     }
 }
