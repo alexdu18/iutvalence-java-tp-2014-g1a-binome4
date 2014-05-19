@@ -84,6 +84,7 @@ public class Fenetre implements Runnable {
     private class Bouton extends JButton {
 	private int ligne;
 	private int colonne;
+	private Pion pion;
 
 	Bouton(int numLigne, int numColonne) {
 	    ligne = numLigne;
@@ -93,8 +94,10 @@ public class Fenetre implements Runnable {
 
 	class BListener implements ActionListener {
 	    public void actionPerformed(ActionEvent e) {
-		if (partieIHM.estLibre(ligne, colonne))
-		    partieIHM.poserPion(ligne,colonne,Pion pion)
+		if (partieIHM.estLibre(ligne, colonne)){
+		    partieIHM.poserPion(ligne,colonne,m_joueurs[m_tour].pion());
+		    
+		}
 	    }
 	}
     }
