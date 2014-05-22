@@ -40,40 +40,40 @@ public class Fenetre implements Runnable {
 		demande.setResizable(false);
 		demande.setLocationRelativeTo(null);
 		demande.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		/** Conteneur global */
 		JPanel container = new JPanel();
 		container.setBackground(Color.white);
-		
+
 		/** Police */
 		Font police = new Font("Arial", Font.BOLD, 16);
-		
+
 		/** Champ 1 */
 		jtf1 = new JTextField("Joueur1");
 		jtf1.setPreferredSize(new Dimension(230, 40));
-	    jtf1.setFont(police);
+		jtf1.setFont(police);
 		jtf1.setForeground(Color.BLUE);
 		lab1 = new JLabel("Pseudo joueur 1");
 		lab1.setFont(police);
 		container.add(lab1);
 		container.add(jtf1);
-		
+
 		/** Champ 2 */
 		jtf2 = new JTextField("Joueur2");
 		jtf2.setPreferredSize(new Dimension(230, 40));
-	    jtf2.setFont(police);
+		jtf2.setFont(police);
 		jtf2.setForeground(Color.BLUE);
 		lab2 = new JLabel("Pseudo joueur 2");
 		lab2.setFont(police);
 		container.add(lab2);
 		container.add(jtf2);
-		
+
 		/** Bouton de validation */
 		JButton valide = new JButton("Valider");
 		valide.setFont(police);
 		valide.addActionListener(new BoutonListener());
 		container.add(valide);
-		
+
 		/** Traitement divers */
 		demande.setContentPane(container);
 		demande.setVisible(true);
@@ -85,11 +85,11 @@ public class Fenetre implements Runnable {
 		tabMorpion.setSize(500, 500);
 		tabMorpion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		tabMorpion.setLocationRelativeTo(null);
-		
+
 		/** Conteneur global */
 		JPanel container = new JPanel();
 		container.setBackground(Color.white);
-		
+
 		/** Conteneur haut */
 		JPanel top = new JPanel();
 
@@ -118,24 +118,31 @@ public class Fenetre implements Runnable {
 			colonne = numColonne;
 			addActionListener(new BListener());
 		}
+	}
 
-		class BListener implements ActionListener {
-			public void actionPerformed(ActionEvent e) {
-				if (partieIHM.estLibre(ligne, colonne)) {
-					partieIHM.poserPion(ligne, colonne, m_joueurs[m_tour].pion());
-				}
+	
+	public class BListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			bouton.setEnabled(false)
+			if (partieIHM.estLibre(ligne, colonne)) {
+				partieIHM.poserPion(ligne, colonne, m_joueurs[m_tour].pion());
 			}
-		}
-	}
 
-	class BoutonListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			final Joueur joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
-			final Joueur joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
-			final Score gestionnaireScore = new Score(joueur1, joueur2);
-			partieIHM = new PartieIHM(joueur1, joueur2, gestionnaireScore);
-			demande.setVisible(false);
-			tabMorpion.setVisible(true);
 		}
+
 	}
+	
+
+class BoutonListener implements ActionListener {
+	public void actionPerformed(ActionEvent e) {
+		final Joueur joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
+		final Joueur joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
+		final Score gestionnaireScore = new Score(joueur1, joueur2);
+		partieIHM = new PartieIHM(joueur1, joueur2, gestionnaireScore);
+		demande.setVisible(false);
+		tabMorpion.setVisible(true);
+	}
+}
 }

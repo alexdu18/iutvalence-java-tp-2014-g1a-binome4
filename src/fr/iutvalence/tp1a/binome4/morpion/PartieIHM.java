@@ -19,13 +19,13 @@ public class PartieIHM {
     /** Compteur du nombre de tour. */
     private       int      m_nbTours;
     /** IHM. */
-    private final Console m_console;
+    private final Console m_ihm;
 
     public PartieIHM(final Joueur joueur1, final Joueur joueur2, final Score gestionnaireScore) {
 	m_joueurs = new Joueur[] { joueur1, joueur2 };
 	m_score = gestionnaireScore;
 	m_plateau = new Plateau();
-	m_console = new Console(); // a changer par l'ihm
+	m_ihm = new Console(); // a changer par l'ihm
 	m_tour = 0;
 	m_tableau = new Pion[3][3];
         for (int i = 0; i < 3; i++) {
@@ -36,30 +36,30 @@ public class PartieIHM {
 
     /** Gére une partie. */
     public void jouer() {
-	m_console.afficherPlateau(m_plateau.toString());
+	m_ihm.afficherPlateau(m_plateau.toString());
 	while (!m_plateau.victoire() && !m_plateau.estPlein()) {
-	    m_console.afficherDebutTour(m_joueurs[m_tour]);
+	    m_ihm.afficherDebutTour(m_joueurs[m_tour]);
 	    int[] saisie;
 	    while (true) {
-		saisie = m_console.saisirCoordonnees();
+		saisie = m_ihm.saisirCoordonnees();
 		if (m_plateau.estLibre(saisie[0], saisie[1])) {
 		    break;
 		}
-		m_console.afficherErreurSaisie();
+		m_ihm.afficherErreurSaisie();
 	    }
 	    m_plateau.poserPion(saisie[0], saisie[1], m_joueurs[m_tour].pion());
-	    m_console.afficherPlateau(m_plateau.toString());
+	    m_ihm.afficherPlateau(m_plateau.toString());
 	    m_tour = (m_tour + 1) % 2;
 	}
 	if (m_plateau.victoire()) {
 	    final Joueur vainqueur = m_joueurs[(m_tour + 1) % 2];
-	    m_console.afficherVainqueur(vainqueur);
+	    m_ihm.afficherVainqueur(vainqueur);
 	    m_score.gagne(vainqueur.nom());
 	} else {
-	    m_console.afficherMatchNul();
+	    m_ihm.afficherMatchNul();
 	    m_score.nul();
 	}
-	m_console.afficherStatistiques(m_joueurs, m_score);
+	m_ihm.afficherStatistiques(m_joueurs, m_score);
     }
 
     public boolean estPlein() {
