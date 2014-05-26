@@ -14,6 +14,9 @@ import javax.swing.SwingUtilities;
 public final class Appli {
 	/** Application générale. */
 	public static void main(final String... args) {
+	    if (args.length==1 && "--gui".equals(args[0])) {
+		SwingUtilities.invokeLater(new Fenetre());
+	    } else {
 		final Scanner reader = new Scanner(System.in, "UTF-8");
 		boolean choixInterface = false;
 		String consoleOuGraph = "";
@@ -43,7 +46,7 @@ public final class Appli {
 			}
 		} else if (consoleOuGraph.equalsIgnoreCase("g")) {
 			SwingUtilities.invokeLater(new Fenetre());
-		}
+		}}
 	}
 
 }

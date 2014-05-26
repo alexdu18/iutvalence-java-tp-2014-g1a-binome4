@@ -15,8 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
-public class Fenetre implements Runnable {
-    private PartieIHM partieIHM;
+public class Fenetre implements Runnable, InteractionIHM {
+    private PartieIHM model;
     private JTextField jtf1;
     private JTextField jtf2;
     private JLabel lab1;
@@ -35,6 +35,7 @@ public class Fenetre implements Runnable {
     }
 
     private void demanderJoueurs() {
+	
 	/** Fenetre globale */
 	demande = new JFrame("Morpion");
 	demande.setSize(500, 500);
@@ -99,8 +100,8 @@ public class Fenetre implements Runnable {
 
 	for (int numeroDeLigne = 1; numeroDeLigne < 4; numeroDeLigne++) {
 	    for (int numeroDeColonne = 1; numeroDeColonne < 4; numeroDeColonne++) {
-		JButton bouton = new JButton("bouton"+numeroDeLigne+numeroDeColonne);
-		bouton.addActionListener(new BCase(numeroDeLigne,numeroDeColonne));
+		JButton bouton = new BCase(numeroDeLigne,numeroDeColonne, model,this);
+		//bouton.addActionListener(new BCase(numeroDeLigne,numeroDeColonne,joueur.pion()));
 		tabMorpion.add(bouton);
 	    }
 	}
@@ -109,21 +110,22 @@ public class Fenetre implements Runnable {
 	tabMorpion.setVisible(false);
     }
 
-    public class BCase implements ActionListener {
-	private int pos;
+    public class BCase extends JButton implements ActionListener {
+	private int ligne;
+	private int colonne;
+	private InteractionIHM ihm;
+	private PartieIHM model;
 	
-	public BCase(int numL, int numC){
-	   String interm = ""+numL+numC;
-	   pos = Integer.parseInt(interm);
+	public BCase(int numL, int numC, PartieIHM model, InteractionIHM ihm){
+	    this.ligne = numL;
+	    this.colonne = numC;
+	    this.ihm = ihm;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-
-	    tabMorpion.setEnabled(false);	    
-	    /*if (partieIHM.estLibre(ligne, colonne)) {
-		partieIHM.poserPion(ligne, colonne, m_joueurs[m_tour].pion());
-	    }*/
-
+	    model.poserPion(ligne, colonne);
+	    ihm.placerPion(ligne, colonne, model.joueurCourant());
+	    // XXX Victoire et nul
 	}
     }
 
@@ -132,7 +134,7 @@ public class Fenetre implements Runnable {
 	    final Joueur joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
 	    final Joueur joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
 	    final Score gestionnaireScore = new Score(joueur1, joueur2);
-	    partieIHM = new PartieIHM(joueur1, joueur2, gestionnaireScore);
+	    model = new PartieIHM(joueur1, joueur2, gestionnaireScore);
 	    demande.setVisible(false);
 	    tabMorpion.setVisible(true);
 	}
