@@ -21,13 +21,14 @@ public final class Appli {
 		boolean choixInterface = false;
 		String consoleOuGraph = "";
 		while (!choixInterface) {
-			System.out.println("Pour jouer en console tapez 'c', pour jouer en graphique tapez 'g'.");
+			System.out
+			.println("Choix du type d'interface\n --------\n 1 Console\n 2 Graphique\n --------\n Votre choix ? ");
 			consoleOuGraph = reader.nextLine();
-			if((consoleOuGraph.equalsIgnoreCase("c")) || (consoleOuGraph.equalsIgnoreCase("g"))){
+			if((consoleOuGraph.equalsIgnoreCase("1")) || (consoleOuGraph.equalsIgnoreCase("2"))){
 				choixInterface = true;
 			}
 		}
-		if (consoleOuGraph.equalsIgnoreCase("c")) {
+		if (consoleOuGraph.equalsIgnoreCase("1")) {
 			System.out.println("Entrez le pseudo du joueur 1 (X) :");
 			final String pseudoJ1S = reader.nextLine();
 			System.out.println("Entrez le pseudo du joueur 2 (O) :");
@@ -44,7 +45,7 @@ public final class Appli {
 				System.out.println("1 pour rejouer, 0 pour arrêter.");
 				rejouer = reader.nextInt() == 1;
 			}
-		} else if (consoleOuGraph.equalsIgnoreCase("g")) {
+		} else if (consoleOuGraph.equalsIgnoreCase("2")) {
 			SwingUtilities.invokeLater(new Fenetre());
 		}}
 	}
