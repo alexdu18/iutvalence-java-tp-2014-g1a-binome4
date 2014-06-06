@@ -32,7 +32,7 @@ public class BCase extends JButton {
 		return pion;
 	}
 	
-	public void poserPion(int tour) {
+    public void poserPion(int tour, PartieIHM model) {
 		if(tour%2 == 1){
 			this.setIcon(new ImageIcon("img/cercle.png"));
 			pion = Pion.JOUEUR2;
@@ -40,9 +40,8 @@ public class BCase extends JButton {
 			this.setIcon(new ImageIcon("img/croix.png"));
 			pion = Pion.JOUEUR1;
 		}
+		model.m_plateau.poserPion(ligne-1, colonne-1, model.m_joueurs[tour].pion());
 	}
 	
-	public boolean victoire() {
-        return ((m_tableau[0][0] == m_tableau[0][1]) && (m_tableau[0][0] == m_tableau[0][2]) && (m_tableau[0][0] != Pion.LIBRE)) || (((m_tableau[1][0] == m_tableau[1][1]) && (m_tableau[1][0] == m_tableau[1][2])) && (m_tableau[1][0] != Pion.LIBRE)) || (((m_tableau[2][0] == m_tableau[2][1]) && (m_tableau[2][0] == m_tableau[2][2])) && (m_tableau[2][0] != Pion.LIBRE)) || (((m_tableau[0][0] == m_tableau[1][0]) && (m_tableau[0][0] == m_tableau[2][0])) && (m_tableau[0][0] != Pion.LIBRE)) || (((m_tableau[0][1] == m_tableau[1][1]) && (m_tableau[0][1] == m_tableau[2][1])) && (m_tableau[0][1] != Pion.LIBRE)) || (((m_tableau[0][2] == m_tableau[1][2]) && (m_tableau[0][2] == m_tableau[2][2])) && (m_tableau[0][2] != Pion.LIBRE)) || (((m_tableau[0][0] == m_tableau[1][1]) && (m_tableau[0][0] == m_tableau[2][2])) && (m_tableau[0][0] != Pion.LIBRE)) || (((m_tableau[0][2] == m_tableau[1][1]) && (m_tableau[0][2] == m_tableau[2][0])) && (m_tableau[0][2] != Pion.LIBRE));
-    }
+
 }

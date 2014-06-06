@@ -3,6 +3,7 @@ package fr.iutvalence.tp1a.binome4.morpion;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,16 +11,20 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.JDialog;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.WindowConstants;
 
 public class Fenetre extends JFrame implements Runnable, ActionListener {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6526373500966340956L;
 	private JTextField jtf1;
 	private JTextField jtf2;
 	private JLabel lab1;
@@ -27,10 +32,19 @@ public class Fenetre extends JFrame implements Runnable, ActionListener {
 
 	private JButton valide;
 
+	private JDialog fenetreFinTour;
 	private JFrame demande;
-	private Window tabMorpion;
+	private JFrame tabMorpion;
 	private int tour;
 	private PartieIHM model;
+	private JButton rejouer;
+	private JButton quitter;
+
+	private Joueur joueur1;
+	private Joueur joueur2;
+	private Score gestionnaireScore;
+	private JTextArea texte;
+	private String text;
 
 	@Override
 	public void run() {
@@ -87,7 +101,56 @@ public class Fenetre extends JFrame implements Runnable, ActionListener {
 		demande.setVisible(true);
 	}
 
+	private void fenetreFinTour() {
+
+		/** Fenetre globale */
+		fenetreFinTour = new JDialog(tabMorpion, "Morpion", true);
+		fenetreFinTour.setSize(800, 200);
+		fenetreFinTour.setResizable(false);
+		fenetreFinTour.setLocationRelativeTo(null);
+		fenetreFinTour.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+		/** Conteneur global */
+		JPanel container = new JPanel();
+		container.setBackground(Color.white);
+
+		/** Police */
+		Font police = new Font("Arial", Font.BOLD, 16);
+
+		if (model.victoire() == true) {
+			Joueur vainqueur = model.m_joueurs[(tour + 1) % 2];
+			model.m_score.gagne(vainqueur.nom());
+			text = vainqueur.nom() + " gagne ! \n\n"
+					+model.m_joueurs[0].nom()+" = "+model.m_score.getScore(model.m_joueurs[0].nom())+"\n"
+					+model.m_joueurs[1].nom()+" = "+model.m_score.getScore(model.m_joueurs[1].nom())+"\n"
+					+"Nul = "+model.m_score.getNul();
+		} else {
+			model.m_score.nul();
+			text = "Match nul ! \n\n"
+					+model.m_joueurs[0].nom()+" = "+model.m_score.getScore(model.m_joueurs[0].nom())+"\n"
+					+model.m_joueurs[1].nom()+" = "+model.m_score.getScore(model.m_joueurs[1].nom())+"\n"
+					+"Nul = "+model.m_score.getNul();
+		}
+		texte = new JTextArea(text);
+		texte.setFont(police);
+		this.fenetreFinTour.add(texte);
+
+		JPanel barreBas = new JPanel();
+		rejouer = new JButton("Rejouer");
+		rejouer.addActionListener(this);
+		this.rejouer.setFont(police);
+		quitter = new JButton("Quitter");
+		quitter.addActionListener(this);
+		this.quitter.setFont(police);
+		barreBas.add(rejouer);
+		barreBas.add(quitter);
+		this.fenetreFinTour.add(barreBas, BorderLayout.SOUTH);
+		fenetreFinTour.setVisible(true);
+		
+	}
+
 	private void jeu() {
+
 		/** Fenetre globale */
 		tabMorpion = new JFrame("Morpion");
 		tabMorpion.setSize(500, 500);
@@ -113,18 +176,30 @@ public class Fenetre extends JFrame implements Runnable, ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == valide) {
-			final Joueur joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
-			final Joueur joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
-			final Score gestionnaireScore = new Score(joueur1, joueur2);
+			joueur1 = new Joueur(jtf1.getText(), Pion.JOUEUR1);
+			joueur2 = new Joueur(jtf2.getText(), Pion.JOUEUR2);
+			gestionnaireScore = new Score(joueur1, joueur2);
 			model = new PartieIHM(joueur1, joueur2, gestionnaireScore);
 			demande.setVisible(false);
 			tabMorpion.setVisible(true);
+		} else if (e.getSource() == rejouer) {
+			fenetreFinTour.dispose();
+			tabMorpion.dispose();
+			
+			//Mettre en place la solution pour refaire une partie
+			
+		} else if (e.getSource() == quitter) {
+			fenetreFinTour.dispose();
+			tabMorpion.dispose();
 		} else {
 			BCase bcase = (BCase) e.getSource();
-			if (bcase.obtenirPion() == null) {
-				bcase.poserPion(tour);
+			if (bcase.obtenirPion() == Pion.LIBRE) {
+				bcase.poserPion((tour)%2,model);
 				tour++;
-				
+				if (model.victoire() == true || tour == 9) {
+					fenetreFinTour();
+				}
+
 			}
 		}
 	}
